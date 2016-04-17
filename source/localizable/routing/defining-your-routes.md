@@ -183,6 +183,35 @@ If the user navigates to `/post/5`, the route will then have the `post_id` of
 `5` to use to load the correct post. In the next section, [Specifying a Route's
 Model](../specifying-a-routes-model), you will learn more about how to load a model.
 
+### Serializing data into dynamic segments
+
+By default, dynamic segments of a route's url will be populated by the properties of the same name on a passed in data model.
+For example, given `postModel={ post_id: 10 }` and the same route map from above, the following:
+
+```templates/application.hbs
+{{#link-to 'post' postModel}}
+  Latest Post
+{{/link-to}}
+```
+
+Would yield a URL of `/post/10`.
+
+However, if you need to control how data gets serialized into your route's dynamic segments,
+you can define a `serialize` function. This is useful especially when your model's property names are more generic than the dynamic segment identifiers.
+
+```app/router.js
+function serializePost(model) {
+  return { post_id: model.id };
+}
+
+Router.map(function() {
+  this.route('post', {
+    path: '/post/:post_id',
+    serialize: serializePost
+  });
+});
+```
+
 ## Wildcard / globbing routes
 
 You can define wildcard routes that will match multiple URL segments. This could be used, for example,
